@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Lab7</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="OSSystems">
+        <item>Google</item>
+        <item>MacOS</item>
+        <item>Google OS</item>
+        <item>Windows</item>
+        <item>Android OS</item>
+        <item>Lixus OS</item>
+        <item>Ubuntu OS</item>
+    </string-array>
+</resources>
