@@ -1,0 +1,168 @@
+T1:-
+package com.example.myapplication;
+
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import android.view.View;
+
+import android.view.Menu;
+import android.view.MenuItem;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        SQLiteDatabase db = openOrCreateDatabase("STUDENT", MODE_PRIVATE, null);
+
+        String query = "CREATE TABLE LOGIN (ID INTEGER, Username TEXT, Password Text)";
+        db.execSQL(query);
+    }
+    }
+
+// issue upper
+T2:- correct
+package com.example.myapplication;
+
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import android.view.View;
+
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        SQLiteDatabase db = openOrCreateDatabase("STUDENT", MODE_PRIVATE, null);
+
+        String query = "CREATE TABLE IF NOT EXISTS LOGIN (ID INTEGER, Username TEXT, Password Text)";
+        db.execSQL(query);
+
+        String insertQuery = "INSERT INTO LOGIN VALUES(2, 'Rabbia', 'Akram')";
+        db.execSQL(insertQuery);
+
+       Cursor cursor = db.rawQuery("SELECT * FROM LOGIN", null); // cursor k format me return data
+        cursor.moveToFirst(); // data read
+
+        while ((cursor.moveToNext())) {
+            String username = cursor.getString(1); // according to the index of the column
+            Toast.makeText(this, "Username: " + username,
+                    Toast.LENGTH_SHORT).show();
+            
+            Log.d("Count: ", ""+cursor.getCount());
+        }
+        }
+    }
+
+T3:-
+        ContentValues cv = new ContentValues();
+        cv.put("ID",3);
+        cv.put("Username", "Asad");
+        cv.put("Password", "1234");
+        
+        db.insert("LOGIN", null, cv);
+// inserting value
+T4:- 
+package com.example.myapplication;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import android.view.View;
+
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        SQLiteDatabase db = openOrCreateDatabase("STUDENT", MODE_PRIVATE, null);
+
+        String query = "CREATE TABLE IF NOT EXISTS LOGIN (ID INTEGER, Username TEXT, Password Text)";
+        db.execSQL(query);
+
+        /*String insertQuery = "INSERT INTO LOGIN VALUES(2, 'Rabbia', 'Akram')";
+        db.execSQL(insertQuery); */
+
+        ContentValues cv = new ContentValues();
+        cv.put("ID",3);
+        cv.put("Username", "Asad");
+        cv.put("Password", "1234");
+
+        db.insert("LOGIN", null, cv);
+
+       Cursor cursor = db.rawQuery("SELECT * FROM LOGIN", null); // cursor k format me return data
+        cursor.moveToFirst(); // data read
+
+        while ((cursor.moveToNext())) {
+            String username = cursor.getString(1); // according to the index of the column
+            Toast.makeText(this, "Username: " + username,
+                    Toast.LENGTH_SHORT).show();
+
+            Log.d("Count: ", ""+cursor.getCount());
+        }
+        }
+    }
+
+Again:-
+ SQLiteDatabase db = openOrCreateDatabase("STUDENT", MODE_PRIVATE, null);
+
+        String query = "CREATE TABLE IF NOT EXISTS LOGIN (ID INTEGER, Username TEXT, Password Text)";
+        db.execSQL(query);
+
+        /*String insertQuery = "INSERT INTO LOGIN VALUES(2, 'Rabbia', 'Akram')";
+        db.execSQL(insertQuery); */
+
+        ContentValues cv = new ContentValues();
+        cv.put("ID",3);
+        cv.put("Username", "Asad");
+        cv.put("Password", "1234");
+
+        db.insert("LOGIN", null, cv);
+
+       Cursor cursor = db.rawQuery("SELECT * FROM LOGIN", null); // cursor k format me return data
+        cursor.moveToFirst(); // data read
+
+        while ((cursor.moveToNext())) {
+            String username = cursor.getString(1); // according to the index of the column
+            Toast.makeText(this, "Username: " + username,
+                    Toast.LENGTH_SHORT).show();
+
+            Log.d("Count: ", ""+cursor.getCount());
+        }

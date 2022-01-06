@@ -1,0 +1,256 @@
+<html>
+	<head>
+		<title>CS 193A - Background Processes</title>
+		<link rel="stylesheet" href="highlightjs/styles/default.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/styles/default.css">
+		<link rel="stylesheet" href="reveal/css/reveal.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/reveal.css">
+		<link rel="stylesheet" href="reveal/css/theme/white.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/theme/white.css">
+		<link rel="stylesheet" href="cs193a-slides.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+<!-- BEGIN SLIDES AREA -->
+
+<section class="titleslide">
+	<h1>CS 193A</h1>
+
+	<p>Background Processes</p>
+</section>
+
+<section>
+	<h1>Background Processes</h1>
+
+	<div class="figuresright">
+		<img src="https://miro.medium.com/max/1400/1*3aFERmJ2VK6rW4lmQlXOQg.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/text-to-speech.png" alt="figure" />
+	</div>
+	
+	<ul>
+		<li><strong>Background Processes:</strong> Processing data in the background is an important part of creating an Android application that is both responsive for your users as well as a good citizen on the Android platform.			
+		<li><B>Guiding Principle</B>
+			<ul>
+				<li>In general, any task that takes more than a few milliseconds should be delegated to a background thread.				
+			</ul>		
+	</ul>
+</section>
+
+<section>
+	<h1>Categories of background tasks</h1>	
+	<ul>
+		<li>Background tasks fall into one of the following main categories
+			<ul>
+				<li>Immediate
+				<li>Exact
+				<li>Expedited
+				<li>Deferred
+			</ul>
+	</ul>
+	<div class="figure">
+		<img src="https://chariotsolutions.com/wp-content/uploads/2021/01/Screen-Shot-2021-01-05-at-2.14.11-PM.png" height="350" />
+	</div>
+	
+</section>
+
+<section>
+	<h1>Background Tasks Explained</h1>
+	<ul>
+		<li>Immediate
+			<ul>
+				<li class="subbullet">This describes tasks that should end when the user leaves a certain scope or finishes an interaction. For these, you should create a separate Thread to run the task on
+			</ul>
+		<li>Exact
+			<ul>
+				<li class="subbullet">A task that must be executed at a particular point in time and they can use <a href="https://www.geeksforgeeks.org/how-to-build-a-simple-alarm-setter-app-in-android/">AlarmManager</a>.
+			</ul>
+		<li>Expedited
+			<ul>
+				<li class="subbullet">A task that needs to run as soon as possible can start an expedited job using <a href="https://developer.android.com/topic/libraries/architecture/workmanager/how-to/define-work#expedited">expedited work</a>.
+			</ul>
+			
+		<li>Deferred
+			<ul>
+				<li class="subbullet">Every task that is not directly connected to a user interaction and can run at any time in the future can be deferred. The recommended solution for deferred tasks is <a href="https://developer.android.com/topic/libraries/architecture/workmanager">WorkManager</a>.</a>
+			</ul>
+		<li>
+	</ul>
+	
+	
+</section>
+
+<section>
+	<h1>Threading</h1>
+	<ul>
+		<li>Android creates one Thread - "UiThread" at the start of application.
+			<ul>
+				<li>UiThread is responsible for
+				<ul>
+					<li>Dispatching events to user interface widgets
+					<li>Drawing events
+					<li>Interaction with components
+				</ul>
+				<li>As mentioned, to keep your app responsive, you shouldn't run long-running tasks on the main thread (UiThread)								
+				<ul>					
+					<pre><code class="java">
+Thread thread = new Thread(new Runnable() {
+    @Override
+    public void run() {
+        final String result = performBlockingTask();
+        // GfG Thread Example
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mTextView.setText(result);
+            }
+        });
+    }
+});
+thread.start();</pre></code>
+				</ul>
+			</ul>
+	</ul>
+	
+</section>
+
+<section>
+	<h1>Thread Pool</h1>
+	
+	<ul>
+		<li>Creating threads is expensive, so you should create a thread pool only once as your app initializes.
+		<li>Be sure to save the instance of the <a href="https://developer.android.com/reference/java/util/concurrent/ExecutorService">ExecutorService</a> either in your Application class or in a <a href="https://developer.android.com/training/dependency-injection/manual">dependency injection container</a>.
+		<ul>
+			<pre><code class="java">
+public class MyApplication extends Application {
+    ExecutorService executorService = Executors.newFixedThreadPool(4);
+}
+</code></pre>
+		</ul>
+		<li>Execution Code
+		<ul>
+			<pre><code class="java">
+ExecutorService executorService = Executors.newFixedThreadPool(10);
+
+executorService.execute(new Runnable() {
+    public void run() {
+        System.out.println("Asynchronous task");
+    }
+});
+
+executorService.shutdown();
+</code></pre>
+		</ul>
+		
+	</ul>
+	
+	
+</section>
+
+<section>
+	<h1><code class="androidapi" data-class="java.util.concurrent.ExecutorService">Executer Service - Methods</code></h1>
+	<ul>
+		<li>execute(Runnable)
+		<li>submit(Runnable)
+		<li>submit(Callable)
+		<li>invokeAny(...)
+		<li>invokeAll(...)
+
+	</ul>
+	
+</section>
+
+<section>
+	<h1>WorkManager</h1>
+	
+	<ul>
+		<li>let's look at the WorkManager, which is part of Android Jetpack and is an Architecture Component. 
+		<li>It is the recommended solution for background work that is deferrable and requires guaranteed execution
+		<ul>
+			<pre><code class="xml">
+dependencies {
+    ...
+    implementation 'androidx.work:work-runtime:2.5.0'
+}
+</code></pre>
+		</ul>
+		<li>Before we write any code, let's first go over some basics regarding WorkManager. Below are some classes we'll be working with:
+		<ul>
+			<li>Worker
+			<li>WorkRequest
+			<li>WorkManager
+		</ul>
+	</ul>
+</section>
+
+<section>
+	<h1>Classes Explained</h1>
+	<ul>
+		<li>Worker
+		<ul>
+			<li class="subbullet">A class that performs work synchronously on a background thread provided by <b>WorkManager</b>. To create a worker, we extend the class and override the <b>doWork()</b> method.
+		</ul>
+		<li>WorkRequest
+		<ul>
+			<li class="subbullet">The base class for specifying parameters for work that should be enqueued. It represents a request to do some work. When instantiating it, we need to pass in the worker that we want to run.
+		</ul>
+		<li>WorkManager
+		<ul>
+			<li class="subbullet">This enqueues deferrable work that is guaranteed to execute sometime after its Constraints are met. It schedules our WorkRequest and makes it run in a way that spreads out the load on the system resources while honoring the specified constraints.
+		</ul>
+	</ul>
+	
+</section>
+
+<section>
+	<h1>How does it work?</h1>
+	<ul><li class="subbullet">
+		<ol>
+			<li>Create a worker class or classes that extend <strong>Worker(context, workerParameters)</strong>
+			<li>These classes will overwrite <strong>doWork()</strong> that returns a Result
+			<li>Create a work request with either <strong>PeriodicWorkRequestBuilder</strong> or <strong>OneTimeWorkRequestBuilder</strong> and set constraints for your worker. 
+			<li>Using an instance of <strong>WorkManager</strong> for your context, call <strong>.enqueueUniquePeriodicWork(...)</strong> or <strong>.enqueueUniqueWork(...)</strong> or <strong>.enqueue(...)</strong> depending on your needs
+			<li>Wait for and react to Result returned from the <strong>Worker</strong>
+
+
+		</ol>
+	</ul>
+	
+</section>
+<section>
+	<h1>Worker Class Code</h1>
+	<ul>
+		<li class="subbullet">
+		<ul>
+			<pre><code class="java">
+public class UploadWorker extends Worker {
+   public UploadWorker(
+       @NonNull Context context,
+       @NonNull WorkerParameters params) {
+       super(context, params);
+   }
+
+   @Override
+   public Result doWork() {
+
+     // Do the work here--in this case, upload the images.
+     uploadImages();
+
+     // Indicate whether the work finished successfully with the Result
+     return Result.success();
+   }
+}
+</code></pre>
+		</ul>
+	</ul>
+</section>
+
+<!-- END SLIDES AREA -->
+			</div>
+		</div>
+
+		<script src="highlightjs/highlight.pack.js" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/highlight.pack.js"></script>
+		<script src="cs193a-slides.js" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.js"></script>
+		<script src="reveal/js/reveal.js" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/js/reveal.js"></script>
+		<script>
+			initializeSlides();
+		</script>
+	</body>
+</html>
