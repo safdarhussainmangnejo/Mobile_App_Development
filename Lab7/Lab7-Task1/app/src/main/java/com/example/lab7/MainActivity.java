@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         DetailsFragment details = new DetailsFragment();
         FragmentManager manager = getSupportFragmentManager();
-        transaction = manage
+        transaction = manage;
 
     }
     public void hello(){
