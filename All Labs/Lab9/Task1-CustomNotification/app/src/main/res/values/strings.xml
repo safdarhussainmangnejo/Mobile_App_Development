@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">CustomNotification</string>
+    <string-array name="data_items">
+        <item>Safdar</item>
+        <item>Nadir</item>
+        <item>Nigeeta</item>
+        <item>Kinza</item>
+    </string-array>
+</resources>

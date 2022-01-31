@@ -1,0 +1,41 @@
+///////////////////////////////////Simle Dialog
+
+///////////////////////////////////// Simple Dialog
+_showSimpleDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return SimpleDialog(
+        children: [
+          SimpleDialogItem(
+              Icon(Icons.person_add, size: 64,),
+              Colors.blue,
+              "nisar@gmail.com"),
+          SimpleDialogItem(
+              Icon(Icons.person_add, size: 64), Colors.blue, "wajid@gmail.com"),
+          SimpleDialogItem(
+              Icon(Icons.person_add, size: 64), Colors.grey, "asad@gmail.com")
+        ],
+      );
+    },
+  );
+}
+
+///////////////////////////////////// Simple Dialog Item
+Widget SimpleDialogItem(Icon icon, Color color, String text) {
+  return SimpleDialogOption(
+    onPressed: () {
+      debugPrint(text + " Clicked");
+    },
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        icon,
+        Text(
+          text,
+          style: TextStyle(color: color),
+        )
+      ],
+    ),
+  );
+}
